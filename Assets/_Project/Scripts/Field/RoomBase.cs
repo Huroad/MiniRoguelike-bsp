@@ -20,10 +20,13 @@ public class RoomBase :MonoBehaviour
     public int corridorWidth = 1;  // 복도 폭
     [SerializeField] private Transform doorBox;
     
-    
-    void Start()
-    {   
-        // MakeMap();
+    void Awake()
+    {
+        mapSize = GameManager.Instance.currentDifficulty.MapSize;
+        minimumDevideRate = GameManager.Instance.currentDifficulty.MinimumDevideRate;
+        maximumDivideRate = GameManager.Instance.currentDifficulty.MaximumDivideRate;
+        maximumDepth = GameManager.Instance.currentDifficulty.MaximumDepth;
+        corridorWidth = GameManager.Instance.currentDifficulty.CorridorWidth;
     }
   
     // 전체 맵 생성

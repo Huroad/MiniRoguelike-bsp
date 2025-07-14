@@ -10,7 +10,7 @@ public class EnemyBoss1 : EnemyBase
     public float bulletSpeed = 6f;
     public int bulletDamage = 10;
 
-    private void Start()
+    protected override void Start()
     {
         base.Start();
         StartCoroutine(PatternRoutine());
@@ -32,7 +32,6 @@ public class EnemyBoss1 : EnemyBase
 
     IEnumerator ShotCirclePattern(int count, float delay)
     {
-        print("ShotCirclePattern");
         for (int i = 0; i < count; i++)
         {
             float angle = (360f / count) * i;
@@ -44,7 +43,6 @@ public class EnemyBoss1 : EnemyBase
 
     IEnumerator SnipePlayerPattern(int count, float delay)
     {
-        print("SnipePlayerPattern");
         for (int i = 0; i < count; i++)
         {
             if (target == null) yield break;

@@ -4,15 +4,23 @@ using UnityEngine;
 
 public class MouseAim : MonoBehaviour
 {
-    // Start is called before the first frame update
+    public GameObject mouseAimPrefab;
+    private GameObject mouseAim;
+    
     void Start()
     {
-        
+        mouseAim = Instantiate(mouseAimPrefab);
+        Cursor.visible = false;
     }
 
-    // Update is called once per frame
     void Update()
     {
+        if(Camera.main == null || mouseAim == null)
+            return;
         
+        Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        mousePosition.z = 0;
+        mouseAim.transform.position = mousePosition;
     }
+
 }
