@@ -2,15 +2,20 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Player : CharacterBase
+public class PlayerController : CharacterBase
 {
     public WeaponBase currentWeapon;
     private Coroutine _fireCoroutine;
     private float _lastFireTime;
 
+    public List<GameObject> weaponPrefabs;
+    private List<GameObject> weaponInstance = new List<GameObject>();
+    private int currentWeaponIndex = 0;
+
     // 무적시간
-    private bool _isInvincible = false;
-    public float invincibleTime = 1f;
+    [HideInInspector]public bool _isInvincible = false;
+    public float invincibleTime = 3f;
+    
     
     protected override void Awake()
     {
@@ -20,9 +25,21 @@ public class Player : CharacterBase
     
     void Start()
     {
-        // 기본총 지급
-        if (currentWeapon == null)
-            currentWeapon = GetComponentInChildren<WeaponBase>();
+        Transform hand = transform.Find("WeaponPivot/Hand");
+        foreach (var prefab in weaponPrefabs)
+        {
+            GameObject weapon = Instantiate(prefab, hand);
+            weapon.SetActive(false);
+            weaponInstance.Add(weapon);
+        }
+
+        // 첫 무기만 활성화
+        if (weaponInstance.Count > 0)
+        {
+            currentWeaponIndex = 0;
+            weaponInstance[currentWeaponIndex].SetActive(true);
+            currentWeapon = weaponInstance[currentWeaponIndex].GetComponent<WeaponBase>();
+        }
     }
     
     void Update()
@@ -34,7 +51,7 @@ public class Player : CharacterBase
         MousePivot();
         if (Input.GetMouseButtonDown(0))
         {
-            if (Time.time >= _lastFireTime + currentWeapon.fireInterval)
+            if (Time.time >= _lastFireTime + currentWeapon.shotInterval)
             {
                 _lastFireTime = Time.time;
                 currentWeapon.Fire();
@@ -42,7 +59,7 @@ public class Player : CharacterBase
 
             // 연사 시작(코루틴)
             if (_fireCoroutine == null && currentWeapon != null)
-                _fireCoroutine = StartCoroutine(FireRoutine(currentWeapon.fireInterval));
+                _fireCoroutine = StartCoroutine(ShotRoutine(currentWeapon.shotInterval));
         }
         
         if (Input.GetMouseButtonUp(0) && _fireCoroutine != null)
@@ -51,8 +68,12 @@ public class Player : CharacterBase
             _fireCoroutine = null;
         }
         
+        // 무기 스왑
+        if (Input.GetKeyDown(KeyCode.Q)) SwapWeapon(-1);
+        if (Input.GetKeyDown(KeyCode.E)) SwapWeapon(1);
+        
         // 회피
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.Space) && !_isInvincible)
         {
             Dodge();
         }
@@ -63,8 +84,10 @@ public class Player : CharacterBase
 
     public override void TakeDamage(int dmg)
     {
-        if (_isInvincible) return;
-        base.TakeDamage(dmg);
+        if (!_isInvincible)
+        {
+            base.TakeDamage(dmg);
+        }
         // 추가로 무적/깜빡임/UI 연동 등 구현
     }
 
@@ -102,20 +125,30 @@ public class Player : CharacterBase
     void Dodge()
     {
         SetState(CharacterState.Dodge);
-        InvincibleRoutine();
+        StartCoroutine(InvincibleRoutine());
     }
     
-    // 공격(마우스) - 무기 교체
-    public void ChangeWeapon(WeaponBase newWeapon)
+    // 무기 스왑 함수
+    public void SwapWeapon(int direction)
     {
-        currentWeapon = newWeapon;
+        if (weaponInstance.Count == 0) return;
+
+        // 현재 무기 비활성화
+        weaponInstance[currentWeaponIndex].SetActive(false);
+
+        // 인덱스 순환
+        currentWeaponIndex = (currentWeaponIndex + direction + weaponInstance.Count) % weaponInstance.Count;
+
+        // 새 무기 활성화 및 currentWeapon 갱신
+        weaponInstance[currentWeaponIndex].SetActive(true);
+        currentWeapon = weaponInstance[currentWeaponIndex].GetComponent<WeaponBase>();
     }
     
-    IEnumerator FireRoutine(float interval)
+    IEnumerator ShotRoutine(float interval)
     {
         while (true)
         {
-            if (Time.time >= _lastFireTime + currentWeapon.fireInterval)
+            if (Time.time >= _lastFireTime + currentWeapon.shotInterval)
             {
                 _lastFireTime = Time.time;
                 currentWeapon.Fire();

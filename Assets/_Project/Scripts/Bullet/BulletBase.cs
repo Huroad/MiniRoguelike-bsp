@@ -6,24 +6,27 @@ using UnityEngine;
 public abstract class BulletBase : MonoBehaviour
 {
     // WeaponBase에서 값 셋
-    private float _speed;
-    private float _damage;
+    protected float _speed;
+    protected int _damage;
+    protected Vector2 dir = Vector2.right;
     
-    public void Setup(float speed, float damage)
+    public void Setup(Vector2 dir, float speed, int damage)
     {
+        this.dir = dir.normalized;
         _speed = speed;
         _damage = damage;
     }
 
     protected virtual void Update()
     {
-        transform.Translate(Vector2.right * _speed * Time.deltaTime);
+        transform.Translate(dir * _speed * Time.deltaTime);
     }
 
     protected virtual void OnTriggerEnter2D(Collider2D collision)
     {
-        // 데미지 처리, 파괴 등
-        print(collision.gameObject.name);
-        Destroy(gameObject);
+        if (collision.CompareTag("Wall"))
+        {
+            Destroy(gameObject);
+        }
     }
 }

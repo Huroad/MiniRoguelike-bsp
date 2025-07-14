@@ -5,8 +5,17 @@ using UnityEngine;
 public class PistolBullet : BulletBase
 {
     
-    void Update()
+    protected override void OnTriggerEnter2D(Collider2D collision)
     {
-        base.Update();       
+        if (collision.CompareTag("Enemy"))
+        {
+            var enemy = collision.GetComponent<EnemyBase>();
+            if (enemy != null)
+            {
+                enemy.TakeDamage(_damage);
+                Destroy(gameObject);
+            }
+        }
+        base.OnTriggerEnter2D(collision);
     }
 }

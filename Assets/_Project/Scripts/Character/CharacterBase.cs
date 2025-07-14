@@ -40,11 +40,8 @@ public abstract class CharacterBase : MonoBehaviour
         characterState = newState;
         
         animator.SetBool("IsWalking", false);
-        //animator.SetBool("IsHit", false);
-        //animator.SetBool("IsDodge", false);
         animator.SetBool("IsDead", false);
-
-        // 2. 해당 상태만 true로 세팅
+        
         switch (characterState)
         {
             case CharacterState.Idle:
@@ -73,7 +70,11 @@ public abstract class CharacterBase : MonoBehaviour
     {
         if (isDead) return;
         currentHP -= dmg;
+        SetState(CharacterState.Hit);
+        
+        // 데미지 주석~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         print(currentHP);
+        
         if (currentHP <= 0)
         {
             currentHP = 0;
@@ -85,6 +86,7 @@ public abstract class CharacterBase : MonoBehaviour
     {
         isDead = true;
         // 공통 사망처리(이팩트)
+        SetState(CharacterState.Die);
         Destroy(gameObject);
     }
 }

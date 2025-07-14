@@ -1,27 +1,38 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public abstract class WeaponBase : MonoBehaviour
 {
     //public float fireRate;
     public GameObject bulletPrefab;
-    public Transform firePoint;
+    public List<Transform> shotPoint;
+    [HideInInspector] public GameObject player;
     
-    public float fireInterval;  // 간격
-    public float fireSpeed;  // 속도
-    public float fireDamage;  // 데미지
-    // [HideInInspector] 가리기
+    public float shotInterval;  // 간격
+    public float shotSpeed;  // 속도 (플레이어 속도를 곱해서 사용 예정)
+    public int shotDamage;  // 데미지
     
-    protected virtual void Awake()
+    /*protected virtual void Awake()
     {
-        firePoint = transform.Find("FirePoint");
+        
+    }*/
+    
+    protected virtual void Start()
+    {
+        player = GameObject.FindGameObjectWithTag("Player");
+        shotSpeed = player.GetComponent<PlayerController>().moveSpeed * shotSpeed;
+        
     }
-
+    
     public virtual void Fire()
     {
-        GameObject bullet = Instantiate(bulletPrefab, firePoint.position, firePoint.rotation);
-        bullet.GetComponent<BulletBase>().Setup(fireSpeed, fireDamage);
+        foreach (var sp in shotPoint)
+        {
+            GameObject bullet = Instantiate(bulletPrefab, sp.position, sp.rotation);
+            bullet.GetComponent<BulletBase>().Setup(Vector2.right, shotSpeed, shotDamage);
+        }
     }
     
     
