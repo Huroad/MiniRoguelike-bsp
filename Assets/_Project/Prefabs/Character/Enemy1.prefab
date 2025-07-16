@@ -165,8 +165,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 328df65382abd6b4e92ab212bb1b41ae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHP: 100
-  moveSpeed: 0
+  maxHP: 500
+  moveSpeed: 1
   target: {fileID: 0}
   collDamage: 20
   room:

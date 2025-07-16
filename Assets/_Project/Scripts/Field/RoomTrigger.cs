@@ -37,14 +37,26 @@ public class RoomTrigger : MonoBehaviour
                     doors.GetComponent<Door>().CloseDoor();
                 
                 isUse = true;
-                MapManager.Instance.isFight = true;
+                //MapManager.Instance.isFight = true;
+                GameManager.Instance.isFight = true;
                 MapManager.Instance.doorUseList.Clear();
-                
-                if(isBossRoom)
-                    Instantiate(MapManager.Instance.bossFab, MapManager.Instance.CellToWorldCenter(room), Quaternion.identity);
+
+                if (isBossRoom)
+                {
+                    GameObject boss = Instantiate(MapManager.Instance.bossFab, MapManager.Instance.CellToWorldCenter(room), Quaternion.identity);
+                    // BossHpUI hpUI = FindObjectOfType<BossHpUI>();
+                    // print(hpUI);
+                    // hpUI.gameObject.SetActive(true);
+                    // print(boss);
+                    // print(boss.GetComponent<EnemyBoss1>());
+                    // hpUI.SetBoss(boss.GetComponent<EnemyBoss1>());
+                }
                 else
                     SpawnManager.Instance.SpawnMonsters(room, MapManager.Instance.GetTilemap(), MapManager.Instance.roomBase.mapSize);
                 
+                // 문 카운트 초기화
+                GameManager.Instance.SetUseDoorOpenCnt(0);
+
             }
         }
     }

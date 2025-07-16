@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -16,11 +17,16 @@ public class PlayerController : CharacterBase
     [HideInInspector]public bool _isInvincible = false;
     public float invincibleTime = 3f;
     
+    // UI
+    public event Action<int, int> OnHpChanged;
+    public int CurrentHP => currentHP;
+    [SerializeField] private WeaponUI weaponUI;
     
     protected override void Awake()
     {
         base.Awake();
-        //rldr
+        
+        OnHpChanged?.Invoke(currentHP, maxHP);
     }
     
     void Start()
@@ -33,12 +39,17 @@ public class PlayerController : CharacterBase
             weaponInstance.Add(weapon);
         }
 
+        weaponUI = FindObjectOfType<WeaponUI>();
+        
         // 첫 무기만 활성화
         if (weaponInstance.Count > 0)
         {
             currentWeaponIndex = 0;
             weaponInstance[currentWeaponIndex].SetActive(true);
             currentWeapon = weaponInstance[currentWeaponIndex].GetComponent<WeaponBase>();
+            
+            WeaponBase currentWeaponBase = currentWeapon;
+            weaponUI.ShowWeaponUI(currentWeaponBase.weaponType);
         }
     }
     
@@ -87,6 +98,7 @@ public class PlayerController : CharacterBase
         if (!_isInvincible)
         {
             base.TakeDamage(dmg);
+            OnHpChanged?.Invoke(currentHP, maxHP);
         }
         // 추가로 무적/깜빡임/UI 연동 등 구현
     }
@@ -95,6 +107,8 @@ public class PlayerController : CharacterBase
     {
         base.Die();
         // 플레이어 사망 처리 (게임오버, UI)
+        EndSceneUI endSceneUI = FindObjectOfType<EndSceneUI>();
+        endSceneUI.ShowEnding();
     }
     
     // 이동
@@ -132,16 +146,14 @@ public class PlayerController : CharacterBase
     public void SwapWeapon(int direction)
     {
         if (weaponInstance.Count == 0) return;
-
-        // 현재 무기 비활성화
+        
         weaponInstance[currentWeaponIndex].SetActive(false);
-
-        // 인덱스 순환
         currentWeaponIndex = (currentWeaponIndex + direction + weaponInstance.Count) % weaponInstance.Count;
-
-        // 새 무기 활성화 및 currentWeapon 갱신
         weaponInstance[currentWeaponIndex].SetActive(true);
         currentWeapon = weaponInstance[currentWeaponIndex].GetComponent<WeaponBase>();
+        
+        WeaponBase currentWeaponBase = currentWeapon;
+        weaponUI.ShowWeaponUI(currentWeaponBase.weaponType);
     }
     
     IEnumerator ShotRoutine(float interval)

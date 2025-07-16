@@ -36,7 +36,7 @@ public class EnemyBase : CharacterBase
             // 모든 몬스터가 죽으면 문 열기
             if (room.monsters.Count == 0)
             {
-                MapManager.Instance.isFight = false;
+                GameManager.Instance.isFight = false;
                 /*foreach (var door in room.doors)
                 {
                     door.GetComponent<Door>().OpenDoor();

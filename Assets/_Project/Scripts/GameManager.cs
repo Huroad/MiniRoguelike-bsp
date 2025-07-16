@@ -50,6 +50,13 @@ public class GameManager : MonoBehaviour
     private int SelectedDifficulty = 1;
     public List<DifficultyData> difficultyDatas;
     public DifficultyData currentDifficulty;    // 현재 설정된 데이터
+    
+    // 플레이어가 전투중인지
+    public bool isFight = false;
+    private int useDoorOpenCnt = 0;
+    public int GetUseDoorOpenCnt() => useDoorOpenCnt;
+    public void SetUseDoorOpenCnt(int value) => useDoorOpenCnt = value;
+    
     void Awake()
     {
         if (Instance == null)
@@ -84,4 +91,19 @@ public class GameManager : MonoBehaviour
         return currentDifficulty;
     }
 
+    public void UseDoorOpen()
+    {
+        useDoorOpenCnt++;
+        if (!isFight && useDoorOpenCnt == 1)
+        {
+            foreach (var doors in MapManager.Instance.doorList)
+            {
+                var doorsObj = doors.GetComponent<Door>();
+                if(doorsObj.firstOpen)
+                {
+                    doorsObj.OpenDoor();
+                }
+            }
+        }
+    }
 }

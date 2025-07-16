@@ -8,6 +8,7 @@ public class Door : MonoBehaviour
     public Collider2D coll;
     
     public bool isOpen = false;
+    public bool firstOpen = false;
     
     void Awake()
     {
@@ -17,9 +18,11 @@ public class Door : MonoBehaviour
     
     void OnCollisionEnter2D(Collision2D collision)
     {
-        if (!MapManager.Instance.isFight && !isOpen)
+        if (!GameManager.Instance.isFight && !isOpen)
         {
             OpenDoor();
+            if(GameManager.Instance.GetUseDoorOpenCnt() == 0)
+                GameManager.Instance.UseDoorOpen();
             MapManager.Instance.doorUseList.Add(gameObject);
         }
     }
@@ -29,6 +32,7 @@ public class Door : MonoBehaviour
         isOpen = true;
         sr.enabled = false;
         coll.enabled = false;
+        firstOpen = true;
     }
     public void CloseDoor()
     {

@@ -175,6 +175,24 @@ MonoBehaviour:
   maxHP: 10000
   moveSpeed: 5
   target: {fileID: 0}
+  collDamage: 20
+  room:
+    nodeRect:
+      x: 0
+      y: 0
+      width: 0
+      height: 0
+    roomRect:
+      x: 0
+      y: 0
+      width: 0
+      height: 0
+    direction: 0
+    entryCell: {x: 0, y: 0}
+    doors: []
+    monsters: []
+    monsterSpawned: 0
+    roomTrigger: {fileID: 0}
   shotPoints:
   - {fileID: 1642045286389371019}
   - {fileID: 3811483351382513270}
@@ -182,6 +200,7 @@ MonoBehaviour:
   attackInterval: 1.5
   bulletSpeed: 8
   bulletDamage: 10
+  hpObj: {fileID: 0}
 --- !u!50 &2050195768193605764
 Rigidbody2D:
   serializedVersion: 4

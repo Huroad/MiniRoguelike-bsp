@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1766114780967579329}
   - component: {fileID: 1294623547230844485}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: CameraTrigger
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -93,7 +93,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1555960097379999251}
   - component: {fileID: 8754367019796590035}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: SpriteMask
   m_TagString: Untagged
   m_Icon: {fileID: 0}

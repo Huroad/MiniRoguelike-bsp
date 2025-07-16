@@ -59,11 +59,12 @@ public class MapManager : MonoBehaviour
     [HideInInspector] public Node bossRoom; // 보스 방
 
     private Tilemap tileMap;
+    public Tilemap GetTilemap() => tileMap;
     
     [Tooltip("배치할 도어 프리팹")] public List<GameObject> doorfabList;
     [Tooltip("생성된 리스트")] [HideInInspector] public List<GameObject> doorList;
     [Tooltip("사용한 문 리스트")] public List<GameObject> doorUseList;
-    public bool isFight = false;
+    
     [SerializeField] GameObject roomTriggerPrefab;
     public Transform roomTriggersParent;
     [SerializeField] GameObject cameraTriggerPrefab;
@@ -101,6 +102,10 @@ public class MapManager : MonoBehaviour
         
         // 플레이어 배치
         GameObject player = Instantiate(playerFab, CellToWorldCenter(playerRoom), Quaternion.identity);
+        PlayerHpUI hpUI = FindObjectOfType<PlayerHpUI>();
+        hpUI.SetPlayer(player.GetComponent<PlayerController>());
+        PlayerCamera pc = FindObjectOfType<PlayerCamera>();
+        pc.target = player.transform;
         
         virtualCamera.Follow = player.transform;
         var confiner = virtualCamera.GetComponent<CinemachineConfiner2D>();
@@ -109,6 +114,9 @@ public class MapManager : MonoBehaviour
         playerRoom.roomTrigger.GetComponent<RoomTrigger>().roomMask.enabled = false;
 
         bossRoom.roomTrigger.GetComponent<RoomTrigger>().isBossRoom = true;
+        
+        MiniMap map = FindObjectOfType<MiniMap>();
+        map.player = player.transform;
         
     }
     
@@ -223,7 +231,4 @@ public class MapManager : MonoBehaviour
             }
         }
     }
-
-
-    public Tilemap GetTilemap() => tileMap;
 }

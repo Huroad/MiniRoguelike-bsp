@@ -72,8 +72,7 @@ public abstract class CharacterBase : MonoBehaviour
         currentHP -= dmg;
         SetState(CharacterState.Hit);
         
-        // 데미지 주석~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        print(currentHP);
+        // print(currentHP);
         
         if (currentHP <= 0)
         {
